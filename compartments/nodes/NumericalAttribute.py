@@ -44,13 +44,13 @@ model.add_status("Susceptible")
 model.add_status("Infected")
 model.add_status("Removed")
 
-# Compartment definition
+# Compartment definition (anche se ho un waning funziona)
 c1 = na("Age", value=18, op="==", probability=0.6)
 
 #in order to change the node status this condition must be satisfied, the node Age attribute must be in the range [20, 25]
 #and at least one of the neighbors must be in the Susceptible status. If the condition is satisfied, the node status will
 #change with a probability of 0.6
-c2 = na("Age", value=[20, 25], op="IN", probability=0.6, triggering_status="Susceptible")
+c2 = na('Age', value=[20, 25], op="IN", probability=0.6, triggering_status="Susceptible")
 
 # Rule definition
 model.add_rule("Susceptible", "Infected", c1)
@@ -63,3 +63,8 @@ config.add_model_parameter('fraction_infected', 0.1)
 # Simulation execution
 model.set_initial_status(config)
 iterations = model.iteration_bunch(100)
+
+for iteration in iterations:
+    iteration.pop('status', None)
+
+print(json.dumps(iterations, indent=2))
