@@ -22,10 +22,11 @@ import networkx as nx
 import random
 import ndlib.models.ModelConfig as mc
 import ndlib.models.CompositeModel as gc
-import ndlib.models.compartments.EdgeCategoricalAttribute as na
+from ndlib.models.compartments import EdgeCategoricalAttribute
+import json
 
 # Network generation
-g = nx.erdos_renyi_graph(1000, 0.1)
+g = nx.erdos_renyi_graph(300, 0.1)
 
 # Setting edge attribute
 attr = {e: {"type": random.choice(['co-worker', 'family'])} for e in g.edges()}
@@ -37,11 +38,14 @@ model = gc.CompositeModel(g)
 # Model statuses
 model.add_status("Susceptible")
 model.add_status("Infected")
-model.add_status("Removed")
+model.add_status("Recovered")
 
 # Compartment definition
-c1 = na.EdgeCategoricalAttribute("type", "co-worker", probability=0.6)
-c2 = na.EdgeCategoricalAttribute("type", "family", probability=0.6, triggering_status="Susceptible")
+#all nodes with co-worker edge will be infected with probability 0.6
+c1 = EdgeCategoricalAttribute("type", "co-worker", probability=0.6)
+#all nodes with family edge will be recovered with probability 0.6 only if they have
+# at least one neighbor in the Susceptible status
+c2 = EdgeCategoricalAttribute("type", "family", probability=0.6, triggering_status="Susceptible")
 
 # Rule definition
 model.add_rule("Susceptible", "Infected", c1)
@@ -49,8 +53,13 @@ model.add_rule("Infected", "Recovered", c2)
 
 # Model initial status configuration
 config = mc.Configuration()
-config.add_model_parameter('fraction_infected', 0)
+config.add_model_parameter('fraction_infected', 0.1)
 
 # Simulation execution
 model.set_initial_status(config)
-iterations = model.iteration_bunch(100)
+iterations = model.iteration_bunch(10)
+
+for iteration in iterations:
+    iteration.pop('status', None)
+
+print(json.dumps(iterations, indent=2))

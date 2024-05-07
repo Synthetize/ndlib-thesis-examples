@@ -26,7 +26,7 @@ import networkx as nx
 import random
 import ndlib.models.ModelConfig as mc
 import ndlib.models.CompositeModel as gc
-import ndlib.models.compartments.NodeNumericalAttribute as na
+from ndlib.models.compartments import NodeNumericalAttribute as na
 import json
 
 # Network generation
