@@ -36,7 +36,7 @@ condition = cpm.NodeStochastic(1)
 
 # Model initial status configuration
 config = mc.Configuration()
-config.add_model_parameter('similarity_threshold', 0.1)
+config.add_model_parameter('similarity_threshold', 0.3)
 
 model.set_initial_status(initial_status, config)
 
@@ -53,7 +53,7 @@ def update_opinion(node, graph, status, attributes, constants):
 
     if len(valid_neighbors) > 0:
         average_neighbor_opinion = sum([status[neighbor]['Opinion'] for neighbor in valid_neighbors]) / len(valid_neighbors)
-        new_opinion = node_opinion + node_influence_strength * (average_neighbor_opinion - node_opinion) #* random.uniform(-0.5, 0.5)
+        new_opinion = node_opinion + node_influence_strength * (average_neighbor_opinion - node_opinion) * random.uniform(-0.5, 0.5)
         new_opinion = min(1, max(0, new_opinion))  # Limit the value of new_opinion immediately after calculating it
     else:
         new_opinion = status[node]['Opinion']
@@ -73,13 +73,12 @@ visualization_config = {
         'Opinion': [0, 1]
     },
     'show_plot': True,
-    'plot_output': './opinion_evolution.gif',
+    'plot_output': './custom_model_definitions/opinion_evolution.gif',
     'plot_title': 'Opinion evolution simulation',
 }
 model.configure_visualization(visualization_config)
 
-iterations = model.iteration_bunch(1000)
-# print(json.dumps(iterations, indent=1))
+iterations = model.iteration_bunch(200)
 
 # Show animated plot
 model.visualize(iterations)
