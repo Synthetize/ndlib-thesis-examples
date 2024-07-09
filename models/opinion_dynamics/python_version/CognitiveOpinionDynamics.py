@@ -27,4 +27,4 @@ iterations = model.iteration_bunch(200)
 trends = model.build_trends(iterations)
 
 viz = OpinionEvolution(model, iterations)
-viz.plot("opinion_ev.png")
+viz.plot("opinion_ev_2.png")

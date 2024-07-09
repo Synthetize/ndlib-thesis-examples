@@ -12,10 +12,14 @@ seir_model = ep.SEIRModel(g)
 
 # Model Configuration
 config = mc.Configuration()
-config.add_model_parameter('beta', 0.01)  # infection rate 1%
-config.add_model_parameter('gamma', 0.005)  # recovery rate 0.5%
-config.add_model_parameter('alpha', 0.05)  # incubation rate 5%
-config.add_model_parameter("fraction_infected", 0.05)  # initial fraction of infected nodes 5%
+config.add_model_parameter('beta', 0.05)  # infection rate
+config.add_model_parameter('gamma', 0.005)  # removal rate
+config.add_model_parameter('alpha', 0.05)  # latent period
+
+
+config.add_model_parameter("tp_rate", 0)  # transmission probability rate
+
+config.add_model_parameter("fraction_infected", 0.05)  # initial fraction of infected nodes
 seir_model.set_initial_status(config)
 
 # Simulation execution
